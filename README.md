@@ -1,7 +1,7 @@
 # *Taranos Pseudo-API* #
 
 ### What is Taranos Pseudo-API? ###
-This is high-level Python "pseudo-API" for the canonical [_Taranos:CSF_](https://github.com/taranos/taranoscsf) web APIs.  It is intended for educational and tooling purposes and requires the [*Taranos Reference Server*](https://github.com/taranos/taranoscsf-refserver) or compatible server to function.
+This is a high-level Python "pseudo-API" for the canonical web APIs of [_Taranos:CSF_](https://github.com/taranos/taranoscsf).  It is intended for educational and tooling purposes and expects to communicate with the [*Taranos Reference Server*](https://github.com/taranos/taranoscsf-refserver) or an API-compatible server to function.
 
 ### Getting Started ###
 
