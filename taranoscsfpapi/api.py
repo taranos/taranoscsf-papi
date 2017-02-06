@@ -330,7 +330,7 @@ class Globals:
 Globals = Globals()
 
 
-def papi_init(server_url=None):
+def papi_init(server_url=None, is_verbose=False):
     """
     Initialize the Pseudo-API.
 
@@ -338,8 +338,7 @@ def papi_init(server_url=None):
     """
     global Globals
 
-    if server_url:
-        Sender.init(server_url)
+    SingleSender(server_url, is_verbose)
 
     try:
         response_dict = Sender.get('tmp/c')

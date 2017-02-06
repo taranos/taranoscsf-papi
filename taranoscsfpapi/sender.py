@@ -21,71 +21,90 @@ import urllib.parse
 import urllib.request
 
 
-class Sender (object):
-    _last_request_url = None
-    _last_request_data = None
-    _last_request_data_unquoted = None
+class SingleSender:
 
-    _server_url = 'http://localhost:9000'
 
-    def __init__(self):
-        pass
+    default_server_url = 'http://localhost:9000'
 
-    @staticmethod
-    def init(server_url=None):
-        global _server_url
-        if server_url:
-            _server_url = server_url
+    class __InnerSender:
 
-    @staticmethod
-    def report_last_request():
-        text = 'url : ' + str(Sender._last_request_url) + '\n'
-        text += 'body: ' + str(Sender._last_request_data_unquoted)
-        return text
+        def __init__(self, server_url=None, is_verbose=False):
+            self._is_verbose = is_verbose
+            self._last_request_data = None
+            self._last_request_data_unquoted = None
+            self._last_request_url = None
+            self._last_response_string = None
+            self._request_count = 0
+            self._server_url = server_url if server_url else SingleSender.default_server_url
 
-    @staticmethod
-    def request(request):
-        response_dict = {}
-        try:
-            response = urllib.request.urlopen(request)
+        def report_last_request(self):
+            text = '\n' + 'Request #' + str(self._request_count) + '\n'
+            text += '|request url : ' + str(self._last_request_url) + '\n'
+            text += '|request body: ' + str(self._last_request_data_unquoted) + '\n'
+            text += '|response    : ' + str(self._last_response_string)
+            return text
 
-            Sender._last_request_url = request.full_url
-            Sender._last_request_data = request.data
-            Sender._last_request_data_unquoted = \
-                urllib.parse.unquote_plus(request.data.decode('utf-8')) if request.data else None
+        def request(self, request):
+            response_dict = {}
+            try:
+                self._request_count += 1
 
-            response_string = response.read().decode('utf-8')
-            response_dict = json.loads(response_string)
-        except Exception as exc:
-            print(exc)
-        return response_dict
+                response = urllib.request.urlopen(request)
+
+                self._last_request_url = request.full_url
+                self._last_request_data = request.data
+                self._last_request_data_unquoted = \
+                    urllib.parse.unquote_plus(request.data.decode('utf-8')) if request.data else None
+
+                response_string = response.read().decode('utf-8')
+                self._last_response_string = response_string
+                response_dict = json.loads(response_string)
+
+                if self._is_verbose:
+                    print(self.report_last_request())
+
+            except Exception as exc:
+                print(exc)
+            return response_dict
         
-    def get(self, api_spec):
-        url = '%s/%s' % (Sender._server_url, api_spec)
+        def get(self, api_spec):
+            url = '%s/%s' % (self._server_url, api_spec)
 
-        request = urllib.request.Request(url)
-        return self.request(request)
+            request = urllib.request.Request(url)
+            return self.request(request)
 
-    def put(self, args, form_header, api_spec, method='PUT'):
-        if args is None:
-            args = []
-        elif type(args) is not list:
-            args = [args]
+        def put(self, args, form_header, api_spec, method='PUT'):
+            if args is None:
+                args = []
+            elif type(args) is not list:
+                args = [args]
 
-        form_list = []
-        for arg in args:
-            arg_jso = json.dumps(arg() if callable(arg) else arg)
-            form_list.append((form_header, arg_jso))
+            form_list = []
+            for arg in args:
+                arg_jso = json.dumps(arg() if callable(arg) else arg)
+                form_list.append((form_header, arg_jso))
 
-        form_data = None
-        if form_list:
-            form_data = urllib.parse.urlencode(form_list)
-        url = '%s/%s' % (Sender._server_url, api_spec)
+            form_data = None
+            if form_list:
+                form_data = urllib.parse.urlencode(form_list)
+            url = '%s/%s' % (self._server_url, api_spec)
 
-        if form_data:
-            request = urllib.request.Request(url, data=bytes(form_data, 'utf-8'), method=method)
+            if form_data:
+                request = urllib.request.Request(url, data=bytes(form_data, 'utf-8'), method=method)
+            else:
+                request = urllib.request.Request(url, method=method)
+            return self.request(request)
+
+    _instance = None
+
+    def __init__(self, server_url=None, is_verbose=False):
+        if not SingleSender._instance:
+            SingleSender._instance = SingleSender.__InnerSender(server_url, is_verbose)
         else:
-            request = urllib.request.Request(url, method=method)
-        return self.request(request)
+            SingleSender._instance._server_url = server_url
+            SingleSender._instance._is_verbose = is_verbose
 
-Sender = Sender()
+    def __getattr__(self, name):
+        return getattr(self._instance, name)
+
+Sender = SingleSender()
