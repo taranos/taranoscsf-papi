@@ -330,21 +330,30 @@ class Globals:
 Globals = Globals()
 
 
-def papi_init(server_url=None, is_verbose=False):
-    """
-    Initialize the Pseudo-API.
-
-    :param server_url: URL of the Taranos Server
-    """
+def get_server_defaults():
     global Globals
-
-    SingleSender(server_url, is_verbose)
 
     try:
         response_dict = Sender.get('tmp/c')
         cell_report = handle_response(response_dict, 'rc')
         Globals.fk = cell_report['mf']['_f']
         Globals.tk = cell_report['mt']['_t']
+
+    except PapiException as e:
+        print('get_server_defaults() failed (%s)' % e.__repr__)
+        raise
+
+
+def papi_init(server_url=None, is_verbose=False):
+    """
+    Initialize the Pseudo-API.
+
+    :param server_url: URL of the Taranos Server
+    """
+    SingleSender(server_url, is_verbose)
+
+    try:
+        get_server_defaults()
 
     except PapiException as e:
         print('taranoscsfpapi init failed (%s)' % e.__repr__)

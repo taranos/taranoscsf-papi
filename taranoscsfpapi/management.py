@@ -24,13 +24,28 @@ from taranoscsfpapi.api import *
 
 # Destroy:
 
-def destroy_cell():
+class CellDestructor:
+    def __init__(self,
+                 is_testing):
+        self.is_testing = is_testing
+
+    def __call__(self):
+        request_dict = {}
+        if self.is_testing:
+            request_dict['t'] = '1'
+        return request_dict
+
+
+def destroy_cell(*, is_testing=False):
     """
     Destroy (reset) the currently associated simulation cell.
 
     :return: Cell destruction report
     """
-    response_dict = Sender.put({}, 'dc', 'tmp/c', method='DELETE')
+    response_dict = Sender.put(CellDestructor(is_testing), 'dc', 'tmp/c', method='DELETE')
+
+    get_server_defaults()
+
     return handle_response(response_dict, None)
 
 
