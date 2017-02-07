@@ -18,7 +18,7 @@ Step 2:  Ensure the PYTHONPATH environment variable includes the path to the `ta
 
 - Learn [_Taranos:CSF_ concepts](https://github.com/taranos/taranoscsf/wiki/Domain-Model-Concepts)
 
-- Take the [Pseudo-API tutorial](https://github.com/taranos/taranoscsf/wiki/PAPI-Tutorial)
+- Work with the [Pseudo-API tutorials](https://github.com/taranos/taranoscsf/wiki/PAPI-Tutorials)
 
 - Read [FAQs](https://github.com/taranos/taranoscsf/wiki/FAQ)
 
