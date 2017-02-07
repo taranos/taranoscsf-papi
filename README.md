@@ -10,6 +10,7 @@ Step 1:  Clone the Python package and use as needed:
 ```
 $ git clone https://github.com/taranos/taranoscsf-papi.git
 ```
+Step 2:  Ensure the PYTHONPATH environment variable includes the path to the `taranoscsfpapi` package.
 
 ### Next Steps
 
