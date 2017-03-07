@@ -1,3 +1,5 @@
+![logo](http://netrogenblue.com/taranos/taranos-logo1-p.png)
+
 # *Taranos Pseudo-API*
 
 ### What is Taranos Pseudo-API?
