@@ -1,6 +1,6 @@
 #
 # Taranos Cloud Sonification Framework: Python Pseudo-API
-# Copyright 2017 David Hinson, Netrogen Blue LLC (dhinson@netrogenblue.com)
+# Copyright (C) 2018 David Hinson, Netrogen Blue LLC (dhinson@netrogenblue.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -370,7 +370,7 @@ def destroy_signal_port(*, trunk_key=None, **kwargs):
 def lookup_signal_port(*, trunk_key=None, alias):
     if not trunk_key:
         trunk_key = tk()
-    response_dict = Sender.get('tsp/t/%s/sp/%s' % (trunk_key, alias))
+    response_dict = Sender.get('tsp/t/%s/spa/%s' % (trunk_key, alias))
     return handle_response(response_dict, 'lsp')
 
 

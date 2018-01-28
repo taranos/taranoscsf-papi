@@ -1,6 +1,6 @@
 #
 # Taranos Cloud Sonification Framework: Python Pseudo-API
-# Copyright 2017 David Hinson, Netrogen Blue LLC (dhinson@netrogenblue.com)
+# Copyright (C) 2018 David Hinson, Netrogen Blue LLC (dhinson@netrogenblue.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1561,7 +1561,7 @@ def destroy_probe_collector(*, field_key=None, **kwargs):
 def lookup_probe_collector(*, field_key=None, alias):
     if not field_key:
         field_key = fk()
-    response_dict = Sender.get('trp/f/%s/pc/%s' % (field_key, alias))
+    response_dict = Sender.get('trp/f/%s/pca/%s' % (field_key, alias))
     return handle_response(response_dict, 'lpc')
 
 
